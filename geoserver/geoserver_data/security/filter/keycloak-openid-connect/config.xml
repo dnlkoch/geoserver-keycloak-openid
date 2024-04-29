@@ -1,0 +1,27 @@
+<openIdConnectAuthentication>
+  <id>53a3d886:18f2a561823:-7fff</id>
+  <name>keycloak-openid-connect</name>
+  <className>org.geoserver.security.oauth2.OpenIdConnectAuthenticationFilter</className>
+  <roleSource class="org.geoserver.security.oauth2.OpenIdConnectFilterConfig$OpenIdRoleSource">AccessToken</roleSource>
+  <cliendId>geoserver</cliendId>
+  <clientSecret>dBt6oOzwJHKuywiEMBPTasIBXsqpWSGn</clientSecret>
+  <accessTokenUri>https://10.133.9.138/auth/realms/GEOSERVER/protocol/openid-connect/token</accessTokenUri>
+  <userAuthorizationUri>https://10.133.9.138/auth/realms/GEOSERVER/protocol/openid-connect/auth</userAuthorizationUri>
+  <redirectUri>https://localhost/geoserver</redirectUri>
+  <checkTokenEndpointUrl>https://10.133.9.138/auth/realms/GEOSERVER/protocol/openid-connect/userinfo</checkTokenEndpointUrl>
+  <logoutUri>https://10.133.9.138/auth/realms/GEOSERVER/protocol/openid-connect/logout</logoutUri>
+  <scopes>openid email web-origins roles acr microprofile-jwt profile address offline_access phone</scopes>
+  <enableRedirectAuthenticationEntryPoint>false</enableRedirectAuthenticationEntryPoint>
+  <forceAccessTokenUriHttps>true</forceAccessTokenUriHttps>
+  <forceUserAuthorizationUriHttps>true</forceUserAuthorizationUriHttps>
+  <loginEndpoint>/j_spring_oauth2_openid_connect_login</loginEndpoint>
+  <logoutEndpoint>/j_spring_oauth2_openid_connect_logout</logoutEndpoint>
+  <allowUnSecureLogging>true</allowUnSecureLogging>
+  <principalKey>email</principalKey>
+  <jwkURI>https://10.133.9.138/auth/realms/GEOSERVER/protocol/openid-connect/certs</jwkURI>
+  <tokenRolesClaim>resource_access.geoserver.roles</tokenRolesClaim>
+  <sendClientSecret>false</sendClientSecret>
+  <allowBearerTokens>true</allowBearerTokens>
+  <usePKCE>false</usePKCE>
+  <enforceTokenValidation>true</enforceTokenValidation>
+</openIdConnectAuthentication>

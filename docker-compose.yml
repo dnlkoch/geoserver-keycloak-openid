@@ -1,0 +1,55 @@
+services:
+
+  nginx:
+    image: nginx:1.26.0-alpine
+    volumes:
+      - ./nginx/ssl/private/localhost.crt:/etc/nginx/ssl/private/localhost.crt
+      - ./nginx/ssl/private/localhost.key:/etc/nginx/ssl/private/localhost.key
+      - ./nginx/dev/default.conf:/etc/nginx/templates/default.conf.template
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - geoserver
+      - keycloak
+
+  geoserver:
+    image: docker.osgeo.org/geoserver:2.25.0
+    environment:
+      EXTRA_JAVA_OPTS: -Xms1g -Xmx2g -DGEOSERVER_CSRF_WHITELIST=localhost -DENTITY_RESOLUTION_ALLOWLIST=* -Dgwc.context.suffix=gwc
+      STABLE_EXTENSIONS: geofence-server,sec-oauth2-openid-connect
+    volumes:
+      - ./geoserver/geoserver_data:/opt/geoserver_data/
+      - ./geoserver/additional_libs:/opt/additional_libs/
+      - ./geoserver/keystore/cacerts:/etc/ssl/certs/java/cacerts
+    depends_on:
+      - postgres
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.3
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_PASSWORD}
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres
+      KC_DB_URL_PORT: 5432
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KC_HOSTNAME: ${KEYCLOAK_HOST}
+      KC_HOSTNAME_PATH: /auth
+      KC_HTTP_RELATIVE_PATH: /auth
+    command: ["start", "--proxy", "edge"]
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgis/postgis:16-3.4-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres/postgresql_data:/var/lib/postgresql/data
+      - ./postgres/init_data/01_init_keycloak.sql:/docker-entrypoint-initdb.d/01_init_keycloak.sql

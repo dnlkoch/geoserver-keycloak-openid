@@ -1,0 +1,5 @@
+<geofence>
+  <id>53a3d886:18f2a561823:-8000</id>
+  <name>geofence</name>
+  <className>org.geoserver.geoserver.authentication.auth.GeoFenceAuthenticationProvider</className>
+</geofence>

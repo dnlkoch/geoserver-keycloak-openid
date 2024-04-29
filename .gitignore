@@ -1,0 +1,8 @@
+geoserver/geoserver_data/logs/*.log
+geoserver/geoserver_data/geofence/geofence_db/geofence.*.log.db
+geoserver/geoserver_data/geofence/geofence_db/geofence.lock.db
+nginx/ssl/private/*.crt
+nginx/ssl/private/*.key
+postgres/postgresql_data
+
+.env
