@@ -70,11 +70,23 @@ curl \
 
 ### Test WMS GetMap
 
+#### Authenticated
+
 ```bash
 curl \
   -v \
   -X GET \
   -k \
   -H 'Authorization: Bearer <ACCESS_TOKEN>' \
+  "https://localhost/geoserver/tiger/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&STYLES&LAYERS=tiger%3Apoly_landmarks&SRS=EPSG%3A4326&WIDTH=528&HEIGHT=768&BBOX=-74.0097427368164%2C40.71327209472656%2C-73.91910552978516%2C40.84510803222656"
+```
+
+#### Anonymous
+
+```bash
+curl \
+  -v \
+  -X GET \
+  -k \
   "https://localhost/geoserver/tiger/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&STYLES&LAYERS=tiger%3Apoly_landmarks&SRS=EPSG%3A4326&WIDTH=528&HEIGHT=768&BBOX=-74.0097427368164%2C40.71327209472656%2C-73.91910552978516%2C40.84510803222656"
 ```
