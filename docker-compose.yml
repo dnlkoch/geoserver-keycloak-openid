@@ -1,7 +1,7 @@
 services:
 
   nginx:
-    image: nginx:1.26.0-alpine
+    image: nginx:1.29.1-alpine
     volumes:
       - ./nginx/ssl/private/localhost.crt:/etc/nginx/ssl/private/localhost.crt
       - ./nginx/ssl/private/localhost.key:/etc/nginx/ssl/private/localhost.key
@@ -14,19 +14,22 @@ services:
       - keycloak
 
   geoserver:
-    image: docker.osgeo.org/geoserver:2.25.0
+    image: docker.osgeo.org/geoserver:2.27.2
     environment:
       EXTRA_JAVA_OPTS: -Xms1g -Xmx2g -DGEOSERVER_CSRF_WHITELIST=localhost -DENTITY_RESOLUTION_ALLOWLIST=* -Dgwc.context.suffix=gwc
-      STABLE_EXTENSIONS: geofence-server,sec-oauth2-openid-connect
+      STABLE_EXTENSIONS: geofence-server-postgres,sec-oauth2-openid-connect
+      RUN_UNPRIVILEGED: true
+      RUN_WITH_USER_UID: ${UID}
+      RUN_WITH_USER_GID: ${GID}
     volumes:
       - ./geoserver/geoserver_data:/opt/geoserver_data/
       - ./geoserver/additional_libs:/opt/additional_libs/
-      - ./geoserver/keystore/cacerts:/etc/ssl/certs/java/cacerts
+      - ./geoserver/keystore/cacerts:/opt/java/openjdk/lib/security/cacerts
     depends_on:
       - postgres
 
   keycloak:
-    image: quay.io/keycloak/keycloak:24.0.3
+    image: quay.io/keycloak/keycloak:26.3.3
     environment:
       KEYCLOAK_ADMIN: ${KEYCLOAK_USER}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_PASSWORD}
@@ -37,14 +40,15 @@ services:
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
       KC_HOSTNAME: ${KEYCLOAK_HOST}
-      KC_HOSTNAME_PATH: /auth
+      KC_HTTP_ENABLED: "true"
       KC_HTTP_RELATIVE_PATH: /auth
-    command: ["start", "--proxy", "edge"]
+      KC_PROXY_HEADERS: "xforwarded"
+    command: ["start"]
     depends_on:
       - postgres
 
   postgres:
-    image: postgis/postgis:16-3.4-alpine
+    image: postgis/postgis:16-3.5-alpine
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -53,3 +57,4 @@ services:
     volumes:
       - ./postgres/postgresql_data:/var/lib/postgresql/data
       - ./postgres/init_data/01_init_keycloak.sql:/docker-entrypoint-initdb.d/01_init_keycloak.sql
+      - ./postgres/init_data/02_init_geofence.sql:/docker-entrypoint-initdb.d/02_init_geofence.sql

@@ -24,4 +24,5 @@
   <allowBearerTokens>true</allowBearerTokens>
   <usePKCE>false</usePKCE>
   <enforceTokenValidation>true</enforceTokenValidation>
+  <cacheAuthentication>false</cacheAuthentication>
 </openIdConnectAuthentication>

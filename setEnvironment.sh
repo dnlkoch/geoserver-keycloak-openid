@@ -15,6 +15,11 @@ KEYCLOAK_USER=admin
 # The Keycloak admin password
 KEYCLOAK_PASSWORD=admin
 
+# The ID of the host user the GS image should run as
+USER_ID=$(id -u)
+# The group ID of the host user the GS image should run as
+GROUP_ID=$(id -g)
+
 # The current mode we're in, it's either create or update
 MODE=$1
 
@@ -70,6 +75,9 @@ if [ "$MODE" = "create" ]; then
   echo "KEYCLOAK_HOST=${KEYCLOAK_HOST}" >> $SCRIPT_DIR/$ENV_FILE
   echo "KEYCLOAK_USER=${KEYCLOAK_USER}" >> $SCRIPT_DIR/$ENV_FILE
   echo "KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD}" >> $SCRIPT_DIR/$ENV_FILE
+
+  echo "UID=${USER_ID}" >> $SCRIPT_DIR/$ENV_FILE
+  echo "GID=${GROUP_ID}" >> $SCRIPT_DIR/$ENV_FILE
 
   echo "Successfully wrote $SCRIPT_DIR/$ENV_FILE"
 else
